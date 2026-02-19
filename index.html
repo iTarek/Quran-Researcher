@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>الباحث في الآيات القرآنية</title>
+    <meta name="description" content="الباحث في الآيات القرآنية - محرك بحث متقدم يدعم البحث بالجذر والكلمة وجزء الآية">
+    <link rel="stylesheet" href="style.css">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Amiri+Quran&family=Amiri:wght@400;700&family=Tajawal:wght@300;400;500;700;800&display=swap"
+        rel="stylesheet">
+    <link href="https://fonts.cdnfonts.com/css/kfgqpc-hafs-uthmanic-script" rel="stylesheet">
+</head>
+
+<body>
+    <div class="bg-pattern"></div>
+    <div class="container">
+        <header>
+            <div class="logo-container">
+                <h1>الباحث في الآيات القرآنية</h1>
+                <p class="subtitle">بحث شامل ودقيق في كتاب الله الكريم</p>
+            </div>
+        </header>
+
+        <main>
+            <section class="search-box">
+                <div class="search-box-header">
+                    <h2 class="search-title">شروط البحث</h2>
+                    <p class="search-description">حدد شروط البحث في القرآن الكريم</p>
+                </div>
+                <form id="searchForm">
+                    <div id="conditionsContainer">
+                        <!-- Dynamic condition rows and operators will be added here -->
+                    </div>
+
+                    <div class="search-actions">
+                        <button type="button" id="addConditionBtn" class="btn-add-condition">
+                            <span class="btn-icon">+</span>
+                            إضافة شرط بحث
+                        </button>
+                    </div>
+
+                    <button type="submit" class="btn-search" id="searchBtn">
+                        بحث
+                    </button>
+                </form>
+            </section>
+
+            <section id="resultsSection" class="hidden">
+                <div class="results-header">
+                    <h2>📜 نتائج البحث</h2>
+                    <span id="resultsCount" class="badge">0</span>
+                </div>
+                <div id="resultsList" class="results-grid">
+                    <!-- Results will be injected here -->
+                </div>
+                <div id="pagination" class="pagination">
+                    <!-- Pagination buttons -->
+                </div>
+            </section>
+        </main>
+
+        <footer>
+            <p class="footer-credit">استخدم في تطوير التطبيق قاعدة بيانات قرآنية من إعداد د. بشير يونس جزاه الله خيرًا
+            </p>
+        </footer>
+    </div>
+
+    <!-- Template for Condition Row -->
+    <template id="conditionTemplate">
+        <div class="condition-row">
+            <div class="condition-field condition-field-mode">
+                <label class="condition-label">وضع الشرط</label>
+                <select name="mode" class="form-select condition-mode">
+                    <option value="include">+ تضمين</option>
+                    <option value="exclude">− استثناء</option>
+                </select>
+            </div>
+
+            <div class="condition-field condition-field-type">
+                <label class="condition-label">نوع البحث</label>
+                <select name="type" class="form-select search-type">
+                    <option value="word">كلمة مطابقة</option>
+                    <option value="part">جزء من كلمة / آية</option>
+                    <option value="root">جذر لغوي</option>
+                </select>
+            </div>
+
+            <div class="condition-field condition-field-term">
+                <label class="condition-label">كلمة البحث</label>
+                <input type="text" name="term" class="form-input search-term" placeholder="اكتب كلمة البحث..." required>
+            </div>
+
+            <div class="condition-field condition-field-position">
+                <label class="condition-label">الموضع في الآية</label>
+                <select name="position" class="form-select search-position">
+                    <option value="any">أي مكان</option>
+                    <option value="start">بداية الآية</option>
+                    <option value="end">نهاية الآية</option>
+                </select>
+            </div>
+
+            <button type="button" class="btn-remove-condition" title="حذف الشرط">×</button>
+        </div>
+    </template>
+
+    <!-- Template for Operator between conditions -->
+    <template id="operatorTemplate">
+        <div class="condition-operator">
+            <div class="operator-line"></div>
+            <select class="operator-select">
+                <option value="AND">و</option>
+                <option value="OR">أو</option>
+            </select>
+            <div class="operator-line"></div>
+        </div>
+    </template>
+
+    <script src="app.js"></script>
+</body>
+
+</html>
