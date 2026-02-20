@@ -158,16 +158,12 @@ class SearchEngine {
                     
                     // Apply position filtering for root search
                     if ($position === 'start') {
-                        // Check if the word is at the start of the ayah text
-                        // We use the normalized word_clean from the words table and match it against the start of normalized ayah text
-                        $col = $this->textNormalizeSql('a.text_clean');
-                        $wcol = $this->textNormalizeSql('w.word_clean');
-                        $subquery .= " AND ($col LIKE CONCAT($wcol, ' %') OR $col = $wcol)";
+                        // Using the new 'real_position' column which gives the actual 1-based index 
+                        // of the word in text_clean, bypassing missing words in the DB!
+                        $subquery .= " AND w.real_position = 1";
                     } elseif ($position === 'end') {
-                        // Check if the word is at the end of the ayah text
-                        $col = $this->textNormalizeSql('a.text_clean');
-                        $wcol = $this->textNormalizeSql('w.word_clean');
-                        $subquery .= " AND ($col LIKE CONCAT('% ', $wcol) OR $col = $wcol)";
+                        // The end is the total word count in text_clean (spaces + 1)
+                        $subquery .= " AND w.real_position = (CHAR_LENGTH(TRIM(a.text_clean)) - CHAR_LENGTH(REPLACE(TRIM(a.text_clean), ' ', '')) + 1)";
                     }
                     
                     if ($is_exclude) {
@@ -193,9 +189,8 @@ class SearchEngine {
                                 $params[":$param_key"] = "%$term%";
                             }
                         } else {
-                            // word search: pass the term directly (CONCAT handles the pattern in SQL)
+                            // word search: pass the term directly
                             $params[":$param_key"] = $term;
-                            // For position-based word search, we also need the _eq param
                             if ($position === 'start' || $position === 'end') {
                                 $params[":${param_key}_eq"] = $term;
                             }
@@ -267,28 +262,19 @@ class SearchEngine {
      */
     private function buildSubquery($type, $position, $param_key) {
         $subquery = "";
-        $col = $this->textNormalizeSql('a.text_clean');
         
         if ($type === 'part') {
-            if ($position === 'start') {
-                $subquery = "SELECT 1 WHERE $col LIKE :$param_key";
-            } elseif ($position === 'end') {
-                $subquery = "SELECT 1 WHERE $col LIKE :$param_key";
-            } else {
-                $subquery = "SELECT 1 WHERE $col LIKE :$param_key";
-            }
+            $col = $this->textNormalizeSql('a.text_clean');
+            $subquery = "SELECT 1 WHERE $col LIKE :$param_key";
         } elseif ($type === 'word') {
             // Search for exact word in normalized text using word boundary matching
+            $wcol = $this->textNormalizeSql('w2.word_clean');
+            
+            $subquery = "SELECT 1 FROM words w2 WHERE w2.ayah_id = a.id AND $wcol = :$param_key";
             if ($position === 'start') {
-                // Word at start of ayah
-                $subquery = "SELECT 1 WHERE $col LIKE CONCAT(:$param_key, ' %') OR $col = :${param_key}_eq";
+                $subquery .= " AND w2.real_position = 1";
             } elseif ($position === 'end') {
-                // Word at end of ayah
-                $subquery = "SELECT 1 WHERE $col LIKE CONCAT('% ', :$param_key) OR $col = :${param_key}_eq";
-            } else {
-                // Word anywhere: pad text with spaces and search
-                // Note: We need to modify the SQL to search within the normalized text
-                $subquery = "SELECT 1 WHERE CONCAT(' ', $col, ' ') LIKE CONCAT('% ', :$param_key, ' %')";
+                $subquery .= " AND w2.real_position = (CHAR_LENGTH(TRIM(a.text_clean)) - CHAR_LENGTH(REPLACE(TRIM(a.text_clean), ' ', '')) + 1)";
             }
         }
         
