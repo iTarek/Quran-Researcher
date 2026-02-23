@@ -157,13 +157,14 @@ class SearchEngine {
                     $subquery = "SELECT 1 FROM words w WHERE w.ayah_id = a.id AND w.root_id IN ($in_clause)";
                     
                     // Apply position filtering for root search
-                    if ($position === 'start') {
-                        // Using the new 'real_position' column which gives the actual 1-based index 
-                        // of the word in text_clean, bypassing missing words in the DB!
-                        $subquery .= " AND w.real_position = 1";
-                    } elseif ($position === 'end') {
-                        // The end is the total word count in text_clean (spaces + 1)
-                        $subquery .= " AND w.real_position = (CHAR_LENGTH(TRIM(a.text_clean)) - CHAR_LENGTH(REPLACE(TRIM(a.text_clean), ' ', '')) + 1)";
+                    if ($position === 'start' || $position === 'end') {
+                        $wordCol = $this->textNormalizeSql('w.word_clean');
+                        $textCol = $this->textNormalizeSql('a.text_clean');
+                        if ($position === 'start') {
+                            $subquery .= " AND $textCol REGEXP CONCAT('^', $wordCol, '([[:space:]]|$)')";
+                        } else {
+                            $subquery .= " AND $textCol REGEXP CONCAT('(^|[[:space:]])', $wordCol, '$')";
+                        }
                     }
                     
                     if ($is_exclude) {
@@ -189,11 +190,8 @@ class SearchEngine {
                                 $params[":$param_key"] = "%$term%";
                             }
                         } else {
-                            // word search: pass the term directly
+                            // word search: pass the term directly to REGEXP
                             $params[":$param_key"] = $term;
-                            if ($position === 'start' || $position === 'end') {
-                                $params[":${param_key}_eq"] = $term;
-                            }
                         }
 
                         if ($is_exclude) {
@@ -267,14 +265,15 @@ class SearchEngine {
             $col = $this->textNormalizeSql('a.text_clean');
             $subquery = "SELECT 1 WHERE $col LIKE :$param_key";
         } elseif ($type === 'word') {
-            // Search for exact word in normalized text using word boundary matching
-            $wcol = $this->textNormalizeSql('w2.word_clean');
+            // Search for exact word by applying REGEXP boundary matching on normalized text_clean
+            $col = $this->textNormalizeSql("a.text_clean");
             
-            $subquery = "SELECT 1 FROM words w2 WHERE w2.ayah_id = a.id AND $wcol = :$param_key";
             if ($position === 'start') {
-                $subquery .= " AND w2.real_position = 1";
+                $subquery = "SELECT 1 WHERE $col REGEXP CONCAT('^', :$param_key, '([[:space:]]|$)')";
             } elseif ($position === 'end') {
-                $subquery .= " AND w2.real_position = (CHAR_LENGTH(TRIM(a.text_clean)) - CHAR_LENGTH(REPLACE(TRIM(a.text_clean), ' ', '')) + 1)";
+                $subquery = "SELECT 1 WHERE $col REGEXP CONCAT('(^|[[:space:]])', :$param_key, '$')";
+            } else {
+                $subquery = "SELECT 1 WHERE $col REGEXP CONCAT('(^|[[:space:]])', :$param_key, '([[:space:]]|$)')";
             }
         }
         
@@ -319,8 +318,8 @@ class SearchEngine {
                 $normalizedTerm = $this->normalizeText($term);
                 
                 // Find all words in these ayahs that normalize to this term
-                // We need to normalize the word_clean column in SQL to match
-                $wordCleanNorm = $this->textNormalizeSql('w.word_clean');
+                // We need to normalize the word_text column in SQL to match
+                $wordCleanNorm = $this->textNormalizeSql($this->rootNormalizeSql('w.word_text'));
                 
                 $sql = "SELECT DISTINCT w.word_text, w.word_clean
                         FROM words w

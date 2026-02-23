@@ -109,10 +109,14 @@
     <template id="operatorTemplate">
         <div class="condition-operator">
             <div class="operator-line"></div>
-            <select class="operator-select">
-                <option value="AND">و</option>
-                <option value="OR">أو</option>
-            </select>
+            <label class="operator-toggle-wrapper" title="اختر 'و' لشرط إضافي أو 'أو' لمجموعة شروط جديدة">
+                <input type="checkbox" class="operator-toggle" value="OR">
+                <div class="operator-toggle-slider">
+                    <span class="operator-and">و</span>
+                    <span class="operator-thumb"></span>
+                    <span class="operator-or">أو</span>
+                </div>
+            </label>
             <div class="operator-line"></div>
         </div>
     </template>

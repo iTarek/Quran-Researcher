@@ -208,39 +208,87 @@ header h1 {
     background: var(--border);
 }
 
-.operator-select {
-    padding: 4px 10px 4px 30px;
-    border: 1px solid var(--border);
-    border-radius: 20px;
-    background: #fff;
-    color: var(--text-secondary);
-    font-weight: 700;
-    font-size: 0.88rem;
-    font-family: 'Tajawal', sans-serif;
-    min-width: 60px;
-    text-align: center;
+.operator-toggle-wrapper {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
     cursor: pointer;
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.operator-toggle {
+    opacity: 0;
+    width: 0;
+    height: 0;
+    position: absolute;
+}
+
+.operator-toggle-slider {
+    position: relative;
+    width: 80px;
+    height: 32px;
+    background-color: var(--bg-card);
+    border-radius: 20px;
+    border: 1px solid var(--border);
     transition: all var(--transition);
+    display: flex;
+    align-items: center;
     box-shadow: var(--shadow-sm);
-    outline: none;
-    appearance: none;
-    -webkit-appearance: none;
-    -moz-appearance: none;
-    text-align-last: center;
-    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%237f8c8d' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
-    background-repeat: no-repeat;
-    background-position: left 10px center;
-    background-size: 14px;
 }
 
-.operator-select:hover {
-    border-color: var(--accent);
-    color: var(--accent);
+.operator-and, .operator-or {
+    flex: 1;
+    text-align: center;
+    font-size: 0.85rem;
+    font-weight: 700;
+    z-index: 2;
+    transition: color 0.3s ease;
+    line-height: 1;
 }
 
-.operator-select:focus {
-    border-color: var(--accent);
-    box-shadow: 0 0 0 3px rgba(46, 134, 193, 0.1);
+.operator-and {
+    color: #fff;
+}
+
+.operator-or {
+    color: var(--text-secondary);
+}
+
+.operator-thumb {
+    position: absolute;
+    top: 2px;
+    right: 2px;
+    width: 34px;
+    height: 26px;
+    background-color: var(--primary);
+    border-radius: 16px;
+    transition: transform cubic-bezier(0.4, 0, 0.2, 1) 0.3s, background-color 0.3s ease;
+    box-shadow: 0 2px 4px rgba(26, 82, 118, 0.2);
+    z-index: 1;
+}
+
+.operator-toggle:checked + .operator-toggle-slider .operator-thumb {
+    transform: translateX(-40px);
+    background-color: var(--accent);
+}
+
+.operator-toggle:checked + .operator-toggle-slider .operator-and {
+    color: var(--text-secondary);
+}
+
+.operator-toggle:checked + .operator-toggle-slider .operator-or {
+    color: #fff;
+}
+
+.operator-toggle:focus-visible + .operator-toggle-slider {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+}
+
+.operator-toggle-slider:hover {
+    border-color: var(--border-light);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
 }
 
 /* ========================================

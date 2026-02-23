@@ -117,7 +117,14 @@ document.addEventListener('DOMContentLoaded', () => {
                     });
                 }
             } else if (child.classList.contains('condition-operator')) {
-                const operatorValue = child.querySelector('.operator-select').value;
+                const toggle = child.querySelector('.operator-toggle');
+                let operatorValue = 'AND';
+                if (toggle) {
+                    operatorValue = toggle.checked ? 'OR' : 'AND';
+                } else {
+                    const select = child.querySelector('.operator-select');
+                    if (select) operatorValue = select.value;
+                }
 
                 if (operatorValue === 'OR') {
                     // Save current group and start a new one
