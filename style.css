@@ -1,0 +1,715 @@
+/* ========================================
+   Quran Search - Simplified Premium UI
+   ======================================== */
+
+:root {
+    --primary: #1a5276;
+    --primary-dark: #0e3550;
+    --primary-light: #eaf2f8;
+    --accent: #2e86c1;
+    --accent-light: #d6eaf8;
+    --success: #27ae60;
+    --danger: #e74c3c;
+    --bg: #f4f6f9;
+    --bg-card: #ffffff;
+    --text: #2c3e50;
+    --text-secondary: #7f8c8d;
+    --text-muted: #bdc3c7;
+    --border: #dfe6e9;
+    --border-light: #ecf0f1;
+    --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.05);
+    --shadow: 0 4px 15px rgba(0, 0, 0, 0.07);
+    --shadow-lg: 0 10px 35px rgba(0, 0, 0, 0.1);
+    --radius: 14px;
+    --radius-sm: 8px;
+    --radius-xs: 6px;
+    --transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: 'Tajawal', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    direction: rtl;
+    min-height: 100vh;
+    overflow-x: hidden;
+}
+
+/* Background Pattern */
+.bg-pattern {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background:
+        radial-gradient(circle at 15% 25%, rgba(26, 82, 118, 0.03) 0%, transparent 50%),
+        radial-gradient(circle at 85% 75%, rgba(46, 134, 193, 0.03) 0%, transparent 50%);
+    pointer-events: none;
+    z-index: -1;
+}
+
+/* Container */
+.container {
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+/* Header */
+header {
+    text-align: center;
+    padding: 36px 0 28px;
+}
+
+.logo-container {
+    display: inline-block;
+}
+
+header h1 {
+    font-family: 'Amiri', serif;
+    font-size: 2.4rem;
+    font-weight: 700;
+    color: var(--primary-dark);
+    margin-bottom: 6px;
+    letter-spacing: -0.5px;
+}
+
+.subtitle {
+    color: var(--text-secondary);
+    font-size: 1rem;
+    font-weight: 400;
+}
+
+/* ========================================
+   Search Box
+   ======================================== */
+.search-box {
+    background: var(--bg-card);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    margin-bottom: 30px;
+    border: 1px solid var(--border);
+    overflow: hidden;
+}
+
+.search-box-header {
+    padding: 20px 28px 16px;
+    border-bottom: 1px solid var(--border-light);
+}
+
+.search-title {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 4px;
+}
+
+.search-description {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    font-weight: 400;
+}
+
+#searchForm {
+    padding: 20px 28px 28px;
+}
+
+/* ========================================
+   Condition Rows
+   ======================================== */
+#conditionsContainer {
+    display: flex;
+    flex-direction: column;
+}
+
+.condition-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 14px;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    transition: all var(--transition);
+    animation: fadeIn 0.25s ease forwards;
+}
+
+.condition-row:hover {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(46, 134, 193, 0.06);
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-6px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.condition-field {
+    display: flex;
+    flex-direction: column;
+}
+
+.condition-label {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--text-secondary);
+    margin-bottom: 4px;
+    white-space: nowrap;
+}
+
+.condition-field-mode {
+    flex-shrink: 0;
+    min-width: 115px;
+}
+
+.condition-field-type {
+    flex-shrink: 0;
+    min-width: 145px;
+}
+
+.condition-field-term {
+    flex: 1;
+    min-width: 0;
+}
+
+.condition-field-position {
+    flex-shrink: 0;
+    min-width: 115px;
+}
+
+/* ========================================
+   Operator Between Conditions
+   ======================================== */
+.condition-operator {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin: 8px 0;
+    padding: 0 10px;
+}
+
+.operator-line {
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+}
+
+.operator-toggle-wrapper {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    cursor: pointer;
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.operator-toggle {
+    opacity: 0;
+    width: 0;
+    height: 0;
+    position: absolute;
+}
+
+.operator-toggle-slider {
+    position: relative;
+    width: 80px;
+    height: 32px;
+    background-color: var(--bg-card);
+    border-radius: 20px;
+    border: 1px solid var(--border);
+    transition: all var(--transition);
+    display: flex;
+    align-items: center;
+    box-shadow: var(--shadow-sm);
+}
+
+.operator-and, .operator-or {
+    flex: 1;
+    text-align: center;
+    font-size: 0.85rem;
+    font-weight: 700;
+    z-index: 2;
+    transition: color 0.3s ease;
+    line-height: 1;
+}
+
+.operator-and {
+    color: #fff;
+}
+
+.operator-or {
+    color: var(--text-secondary);
+}
+
+.operator-thumb {
+    position: absolute;
+    top: 2px;
+    right: 2px;
+    width: 34px;
+    height: 26px;
+    background-color: var(--primary);
+    border-radius: 16px;
+    transition: transform cubic-bezier(0.4, 0, 0.2, 1) 0.3s, background-color 0.3s ease;
+    box-shadow: 0 2px 4px rgba(26, 82, 118, 0.2);
+    z-index: 1;
+}
+
+.operator-toggle:checked + .operator-toggle-slider .operator-thumb {
+    transform: translateX(-40px);
+    background-color: var(--accent);
+}
+
+.operator-toggle:checked + .operator-toggle-slider .operator-and {
+    color: var(--text-secondary);
+}
+
+.operator-toggle:checked + .operator-toggle-slider .operator-or {
+    color: #fff;
+}
+
+.operator-toggle:focus-visible + .operator-toggle-slider {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+}
+
+.operator-toggle-slider:hover {
+    border-color: var(--border-light);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+/* ========================================
+   Form Controls
+   ======================================== */
+.form-select,
+.form-input {
+    padding: 10px 14px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-xs);
+    font-family: inherit;
+    font-size: 0.92rem;
+    background: #fff;
+    color: var(--text);
+    transition: border-color var(--transition), box-shadow var(--transition);
+    outline: none;
+    width: 100%;
+}
+
+.form-select:focus,
+.form-input:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(46, 134, 193, 0.1);
+}
+
+.form-input::placeholder {
+    color: var(--text-muted);
+}
+
+/* Mode Select Styling */
+.condition-mode {
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.condition-mode option[value="include"] {
+    color: var(--primary);
+}
+
+.condition-mode option[value="exclude"] {
+    color: var(--danger);
+}
+
+/* ========================================
+   Search Actions Bar
+   ======================================== */
+.search-actions {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 16px;
+    padding-top: 16px;
+    border-top: 1px solid var(--border-light);
+}
+
+.btn-add-condition {
+    padding: 8px 18px;
+    background: transparent;
+    color: var(--accent);
+    border: 1px dashed var(--accent);
+    border-radius: var(--radius-xs);
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 0.88rem;
+    font-weight: 600;
+    transition: all var(--transition);
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.btn-add-condition:hover {
+    background: var(--accent-light);
+    border-style: solid;
+}
+
+.btn-add-condition .btn-icon {
+    font-size: 1rem;
+    font-weight: 700;
+    line-height: 1;
+}
+
+/* ========================================
+   Search Button
+   ======================================== */
+.btn-search {
+    display: block;
+    width: 100%;
+    padding: 14px;
+    margin-top: 18px;
+    background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+    color: #fff;
+    border: none;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    font-family: 'Tajawal', sans-serif;
+    font-size: 1.05rem;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    transition: all var(--transition);
+    box-shadow: 0 3px 12px rgba(26, 82, 118, 0.25);
+}
+
+.btn-search:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(26, 82, 118, 0.35);
+}
+
+.btn-search:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 8px rgba(26, 82, 118, 0.2);
+}
+
+/* ========================================
+   Remove Button
+   ======================================== */
+.btn-remove-condition {
+    background: none;
+    border: none;
+    color: var(--text-muted);
+    font-size: 1.2rem;
+    cursor: pointer;
+    padding: 4px 8px;
+    border-radius: 4px;
+    transition: all var(--transition);
+    line-height: 1;
+    flex-shrink: 0;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.btn-remove-condition:hover {
+    color: var(--danger);
+    background: #fdeaea;
+}
+
+/* ========================================
+   Results
+   ======================================== */
+.hidden {
+    display: none;
+}
+
+.results-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 20px;
+}
+
+.results-header h2 {
+    font-family: 'Amiri', serif;
+    font-size: 1.5rem;
+    color: var(--primary-dark);
+}
+
+.badge {
+    background: linear-gradient(135deg, var(--accent) 0%, var(--primary) 100%);
+    color: #fff;
+    padding: 4px 14px;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 600;
+}
+
+.result-card {
+    background: var(--bg-card);
+    padding: 22px 22px 18px;
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-sm);
+    margin-bottom: 14px;
+    border: 1px solid var(--border);
+    border-right: 4px solid var(--primary);
+    transition: all var(--transition);
+    animation: fadeInUp 0.3s ease forwards;
+    opacity: 0;
+}
+
+.result-card:hover {
+    box-shadow: var(--shadow);
+    transform: translateY(-2px);
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.ayah-meta {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    margin-bottom: 12px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.ayah-meta .surah-name {
+    background: var(--primary-light);
+    color: var(--primary-dark);
+    padding: 2px 12px;
+    border-radius: 12px;
+    font-weight: 600;
+    font-size: 0.82rem;
+}
+
+.ayah-meta .ayah-number {
+    color: var(--text-secondary);
+    font-weight: 500;
+}
+
+.ayah-text {
+    font-family: 'KFGQPC HAFS Uthmanic Script', 'Amiri Quran', 'Amiri', serif;
+    font-size: 1.75rem;
+    line-height: 2.5;
+    color: #111;
+    margin-bottom: 14px;
+    padding: 12px 0;
+    word-spacing: 4px;
+    letter-spacing: 0.5px;
+}
+
+/* Highlighting */
+.highlight {
+    background: linear-gradient(135deg, #fef08a 0%, #fbbf24 100%);
+    padding: 2px 4px;
+    border-radius: 4px;
+    color: #78350f;
+    font-weight: inherit;
+    box-shadow: 0 1px 4px rgba(251, 191, 36, 0.35);
+    border-bottom: 2px solid #f59e0b;
+    animation: highlightPulse 1.5s ease-in-out;
+}
+
+@keyframes highlightPulse {
+    0% {
+        background-color: #fb923c;
+    }
+
+    50% {
+        background-color: #fef08a;
+    }
+
+    100% {
+        background-color: transparent;
+    }
+}
+
+.ayah-tafseer {
+    background: #f8faf9;
+    padding: 12px 14px;
+    border-radius: var(--radius-sm);
+    font-size: 0.92rem;
+    color: #555;
+    line-height: 1.7;
+    border-right: 3px solid var(--accent);
+}
+
+/* ========================================
+   Pagination
+   ======================================== */
+.pagination {
+    display: flex;
+    justify-content: center;
+    gap: 6px;
+    margin-top: 30px;
+    flex-wrap: wrap;
+}
+
+.page-btn {
+    padding: 8px 14px;
+    border: 1px solid var(--border);
+    background: var(--bg-card);
+    cursor: pointer;
+    border-radius: 6px;
+    font-family: 'Tajawal', sans-serif;
+    font-weight: 500;
+    font-size: 0.9rem;
+    transition: all var(--transition);
+    color: var(--text);
+}
+
+.page-btn:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+    background: var(--accent-light);
+}
+
+.page-btn.active {
+    background: var(--primary);
+    color: #fff;
+    border-color: var(--primary);
+}
+
+/* Loading */
+.loading-text {
+    text-align: center;
+    padding: 40px;
+    color: var(--text-secondary);
+    font-size: 1.1rem;
+}
+
+.loading-text::after {
+    content: '';
+    display: block;
+    width: 30px;
+    height: 30px;
+    border: 3px solid var(--border);
+    border-top-color: var(--primary);
+    border-radius: 50%;
+    margin: 14px auto 0;
+    animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.error-text {
+    text-align: center;
+    padding: 30px;
+    color: var(--danger);
+    font-weight: 500;
+}
+
+.no-results {
+    text-align: center;
+    padding: 40px;
+    color: var(--text-secondary);
+    font-size: 1.05rem;
+}
+
+/* Footer */
+footer {
+    text-align: center;
+    padding: 24px 0;
+    color: var(--text-secondary);
+    font-size: 0.85rem;
+}
+
+.footer-credit {
+    color: var(--primary);
+    font-weight: 600;
+    font-size: 0.9rem;
+    margin-bottom: 6px;
+}
+
+/* ========================================
+   Responsive
+   ======================================== */
+@media (max-width: 768px) {
+    .container {
+        padding: 12px;
+    }
+
+    header h1 {
+        font-size: 1.8rem;
+    }
+
+    .search-box-header {
+        padding: 16px 20px 12px;
+    }
+
+    #searchForm {
+        padding: 16px 20px 22px;
+    }
+
+    .condition-row {
+        flex-wrap: wrap;
+        gap: 8px;
+        padding: 12px;
+        position: relative;
+    }
+
+    .condition-field-mode {
+        min-width: auto;
+        width: calc(50% - 24px);
+    }
+
+    .condition-field-type {
+        min-width: auto;
+        width: calc(50% - 4px);
+    }
+
+    .condition-field-term {
+        width: 100%;
+    }
+
+    .condition-field-position {
+        min-width: auto;
+        width: calc(50% - 4px);
+    }
+
+    .btn-remove-condition {
+        position: absolute;
+        top: 8px;
+        left: 8px;
+    }
+
+    .search-actions {
+        justify-content: center;
+    }
+}
+
+@media (max-width: 480px) {
+
+    .condition-field-mode,
+    .condition-field-type,
+    .condition-field-position {
+        width: 100%;
+    }
+}
