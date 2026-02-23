@@ -21,7 +21,7 @@
 
 1. **تحميل المشروع**
    ```bash
-   git clone https://github.com/iTarek/Quran-Researcher.git
+   git clone [https://github.com/iTarek/Quran-Researcher.git](https://github.com/iTarek/Quran-Researcher.git)
    cd Quran-Researcher
    ```
 
